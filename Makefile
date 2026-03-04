@@ -1,7 +1,9 @@
 VERILOG_SIM ?= icarus
 VHDL_SIM ?= ghdl
 
-.PHONY: cocotb_tests
+.PHONY: tests cocotb_tests
+tests: cocotb_tests
+
 cocotb_tests:
 	make SIM=$(VERILOG_SIM) TOPLEVEL_LANG=verilog -C tests/cocotb_tests/queue sim checkclean
 	make SIM=$(VERILOG_SIM) TOPLEVEL_LANG=verilog -C tests/cocotb_tests/run_phase sim checkclean

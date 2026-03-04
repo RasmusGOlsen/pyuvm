@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - master
+    - dev
     - ral_dev
   pull_request:
     branches:
@@ -12,10 +13,30 @@ on:
   workflow_dispatch:
 
 jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+      - name: Run lints
+        run: uvx --with tox-uv tox -e lint
+
+  pkg:
+    name: Package Build and Verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+      - name: Build and verify package
+        run: uvx --with tox-uv tox -e pkg
 
   tests:
     name: Python ${{matrix.python-version}} | cocotb ${{matrix.cocotb-version}}
     runs-on: ubuntu-24.04
+    needs: [lint]
 
     strategy:
       fail-fast: false
